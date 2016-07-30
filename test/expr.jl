@@ -35,3 +35,24 @@ test_expr_funcs(:a, :(b + log(c, 10) >= c^exp(d + e)), (:b, :c, :d, :e))
 e = :(a = b + c)
 s = find_symbols(get_core_expr(e))
 mapping = map_symbols(s)
+
+
+---
+
+# e = :(a = b + c)
+# core_e = get_core_expr(e)
+# find_symbols!(s, core_e)
+# build_anon_func(core_e)
+
+d = Dict(:a => randn(100), :b => randn(100), :c => randn(100))
+@run_func(d, d = a + b * c)
+-> apply_tuple_func(d, mappings, tpl -> tpl[1] + tpl[2] * tpl[3])
+
+x = Array(Tuple{Float64, Float64}, 1_000_000)
+for i in 1:length(x)
+    x[i] = randn(Float64), randn(Float64)
+end
+@foo(x, a = b + c)
+macroexpand(quote @foo(x, a = b + c) end)
+
+tmp_e = build_anon_func(get_core_expr(e))
