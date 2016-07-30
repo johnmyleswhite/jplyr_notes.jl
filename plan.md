@@ -1,3 +1,7 @@
+# TODO: All functions here assume that they're given a keyword argument
+# expression as found in the second argument of @foo(df, a = b + c). This
+# should be checked explicitly.
+
 # @select(tbl, d = a + b)
 # @select(tbl, e = a + b * c)
 
@@ -22,3 +26,23 @@
 # Translate @mutate(tbl, d = a + b * c) into a tuple function definition
 # that passes the ordered symbols as `colnames` to generate a new column
 # then inserts that into a copy of `tbl` with a new column called `:d`.
+
+---
+
+# e = :(a = b + c)
+# core_e = get_core_expr(e)
+# find_symbols!(s, core_e)
+# build_anon_func(core_e)
+
+d = Dict(:a => randn(100), :b => randn(100), :c => randn(100))
+@run_func(d, d = a + b * c)
+-> apply_tuple_func(d, mappings, tpl -> tpl[1] + tpl[2] * tpl[3])
+
+x = Array(Tuple{Float64, Float64}, 1_000_000)
+for i in 1:length(x)
+    x[i] = randn(Float64), randn(Float64)
+end
+@foo(x, a = b + c)
+macroexpand(quote @foo(x, a = b + c) end)
+
+tmp_e = build_anon_func(get_core_expr(e))
