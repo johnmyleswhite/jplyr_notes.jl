@@ -205,4 +205,4 @@ following behavior with respect to the number of rows with respect to
 operating on arrays using an approach that does not require anonymous functions
 or macros:
 
-![Performance Graph](https://github.com/johnmyleswhite/jplyr_notes.jl/blob/master/perf/viz.png)
+![Performance Graph](https://github.com/johnmyleswhite/jplyr_notes.jl/blob/master/perf/perf_comparison.png)
